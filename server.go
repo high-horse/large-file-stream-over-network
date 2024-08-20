@@ -42,10 +42,11 @@ func (fs *FileServer) old_readLoop(conn net.Conn) {
 func (fs *FileServer) ReadLoop(conn net.Conn) {
 	buf := new(bytes.Buffer)
 	for {
-		n, err := io.Copy(buf, conn)
+		n, err := io.CopyN(buf, conn, 4000)
 		if err != nil {
 			log.Fatal(err)
 		}
+		panic("should panic")
 		fmt.Println(buf.Bytes())
 		fmt.Printf("Recieved %d bytes over network \n", n)
 	}

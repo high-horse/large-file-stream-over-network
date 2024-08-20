@@ -39,7 +39,7 @@ func SendFile(size int) error {
 	if err != nil {
 		return err
 	}
-	n, err := io.Copy(conn, bytes.NewReader(file))
+	n, err := io.CopyN(conn, bytes.NewReader(file), int64(size))
 	if err != nil {
 		return err
 	}
