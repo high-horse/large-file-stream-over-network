@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"net"
 )
@@ -24,7 +26,7 @@ func (fs *FileServer) Start() {
 	}
 }
 
-func (fs *FileServer) ReadLoop(conn net.Conn) {
+func (fs *FileServer) old_readLoop(conn net.Conn) {
 	buf := make([]byte, 2048)
 	for {
 		n, err := conn.Read(buf)
@@ -33,6 +35,18 @@ func (fs *FileServer) ReadLoop(conn net.Conn) {
 		}
 		file := buf[:n]
 		fmt.Println(file)
+		fmt.Printf("Recieved %d bytes over network \n", n)
+	}
+}
+
+func (fs *FileServer) ReadLoop(conn net.Conn) {
+	buf := new(bytes.Buffer)
+	for {
+		n, err := io.Copy(buf, conn)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(buf.Bytes())
 		fmt.Printf("Recieved %d bytes over network \n", n)
 	}
 }
