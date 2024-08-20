@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"io"
 	"net"
@@ -39,6 +40,8 @@ func SendFile(size int) error {
 	if err != nil {
 		return err
 	}
+	
+	binary.Write(conn, binary.LittleEndian, int64(size))
 	n, err := io.CopyN(conn, bytes.NewReader(file), int64(size))
 	if err != nil {
 		return err
